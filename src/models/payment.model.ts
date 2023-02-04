@@ -12,7 +12,7 @@ export enum FlutterWaveEvent {
     SUBSCRIPTION_CANCELLED = 'subscription.cancelled'
 }
 
-export interface PaymentModel  {
+export interface FlutterWavePaymentData {
     id: number;
     tx_ref: string;
     flw_ref: string;
@@ -41,10 +41,14 @@ export interface PaymentModel  {
     }
 };
 
+export interface PaymentModel extends FlutterWavePaymentData {
+    user_id?: string;
+}
+
 export interface FlutterWaveResponse {
     status: string;
     message: string;
-    data: PaymentModel;
+    data: FlutterWavePaymentData;
     meta: {
         authorization: {
             mode: string;
@@ -55,13 +59,14 @@ export interface FlutterWaveResponse {
 
 export interface FlutterWaveWebHookResponse {
     event: FlutterWaveEvent,
-    data: PaymentModel;
+    data: FlutterWavePaymentData;
 }
 
 const paymentSchema = new Schema<PaymentModel>({
     id: Number,
     tx_ref: String,
     flw_ref: String,
+    user_id: String,
     device_fingerprint: String,
     amount: Number,
     charged_amount: Number,
@@ -88,8 +93,10 @@ const paymentSchema = new Schema<PaymentModel>({
         email: String,
         created_at: String
     }
+}, {
+    timestamps: true
 });
 
 // 3. Create a Model.
-const PaymentModel = model<PaymentModel>('payments', paymentSchema);
-export default PaymentModel;
+const Payment = model<PaymentModel>('payments', paymentSchema);
+export default Payment;

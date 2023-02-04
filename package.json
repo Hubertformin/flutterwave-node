@@ -37,8 +37,10 @@
     "flutterwave-node-v3": "^1.0.12",
     "mongoose": "^6.1.6",
     "morgan": "^1.10.0",
+    "short-uuid": "^4.2.2",
     "swagger-ui-express": "^4.3.0",
     "ua-parser-js": "^1.0.2",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "yup": "^0.32.11"
   }
 }

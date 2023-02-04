@@ -1,25 +1,40 @@
-# Enchird Node.js Backend Template
-This is Node.js + Typescript + Mongoose Express template. To be used for all Enchird Node.js Rest Api projects
+# FlutterWave Implementation
+This is a sample FlutterWave Implementations built with `Node.js`, `Typescript` and `MongoDB`.
 
-## Documentation
-Clone the project to your local computer and create a new branch, this will be the primary branch for all your code. Once you test you code and are ready to submit, create a pull request to the develop branch. **NEVER PUSH DIRECTLY TO THE MASTER BRANCH**. Merging to the master branch shall be done **ONLY BY THE ADMINS**
-### Models
-All models files end with `*.model.ts` and should be defined in the `src/models` directory, see the the example `src/models/user.model.ts`
-
-### Controllers
-Similar to models, controllers should end with `*.controller.ts` and should be defined in the path `src/routers`. 
-For uniformity we recommend all you responses should have well defined status codes. 400* for client errors, 500* for server errors. Every endpoints response object should follow the format
-```typescript
-interface TickketApiResponse {
-    data?: any;             // The data to be passed to the client
-    message?: string;       // A custom message, ex. "Saved to Database", or "There was an error adding this record",
-    errorText?: string;     // For debugging purposes, please convert the error message to a string; see the in user.controller.ts
-}
+## Installation
+```bash
+$ yarn install
 ```
-Please see the example in `src/controllers/user.controller.ts`.
 
-### Running the dev server
-Rul locally with the command `yarn dev` or  `npm run dev`. This script loads the the env file.
+## Structure
+This application was written assuming it being a standalone payment server. Ideally, you will copy parts
+of the code that you desire to user. The main payment logic is found in the `src/routes` path. 
+You will see the logic for requesting Mobile money payments in Francophone Africa as this project
+entails.
 
-### Building 
-To build the project, run `yarn build`. This commands builds the project and outputs the files in the `dist` directory.
+### Requesting Payments 
+See the file `src/routes/payment.routes.ts:48`
+
+When the user wants to issue a payment,
+The Frontend app will request this route.
+This route will:
+1. Validate the `req.body` to make sure the payload sent was valid
+2. FlutterWave SDk will send the payment request to the corresponding network operator.
+   2.1 This request can fail at this stage maybe because the user has insufficient funds or the account is blocked
+   2.2 If the request succeeds,this doesn't mean the payment has been processed.
+   this means the network operator handle the payment and transfer funds to our account and when
+   that is done the network will send a reply back to our server indicating weather the payment
+   was completed or not accordingly. So we use the webhook to listen to these events.
+3. Save the payment data in the database
+4. Send a success or error response back to the user
+
+You can read more on the [Docs](https://developer.flutterwave.com/docs/direct-charge/francophone-mobile-money)
+
+### Listening to Payments
+See the file `src/routes/payment.routes.ts:119`
+
+FlutterWave will send a response to this payment hook, make sure to add this user to the flutter dashboard
+for example if the live server url is https://api.wishme.com, on the Flutter dashboard add this:
+https://api.wishme.com/payment/webhook
+For more documentation
+@see {https://developer.flutterwave.com/docs/integration-guides/webhooks/}

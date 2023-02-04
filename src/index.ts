@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import bodyParser from "body-parser";
 import morgan from "morgan";
-import userRouter from "./routes/payment.routes";
+import paymentsRouter from "./routes/payment.routes";
 import * as swaggerUi from "swagger-ui-express";
 import * as YAML from "yamljs";
 import { userAgent } from "./middleware";
@@ -45,7 +45,7 @@ app.use(userAgent());
 app.use(morgan("dev"));
 
 // ===================================== ROUTES ========================================
-app.use("/users", userRouter);
+app.use("/payments", paymentsRouter);
 
 // Swagger documentation route
 app.use(
