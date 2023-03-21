@@ -54,7 +54,6 @@ app.use(
   swaggerUi.setup(YAML.load("./swagger.yaml"))
 );
 
-
 app.listen(port, () => {
   console.log(`[SERVER] Server is running on the port ${port}.`);
 });
